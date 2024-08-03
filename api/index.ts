@@ -1,16 +1,18 @@
-import express from 'express';
+import express, { json } from 'express';
 import { Prisma, PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { SUBJECTS } from '../constants/subjects';
+import cors from 'cors';
 
 dotenv.config();
 
 const prisma = new PrismaClient();
 const app = express();
 
-app.use(express.json());
+app.use(json());
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'abc123';
@@ -46,9 +48,14 @@ app.post('/api/login', async (req, res) => {
     res.json({ id: user.id, name: user.name, year: user.year, email: user.email, token });
 });
 
-app.get('/api/users', async (req, res) => {
-    const users = await prisma.user.findMany();
-    res.json(users);
+app.get('/api/users/:id', async (req, res) => {
+    const { id } = req.params;
+
+    const user = await prisma.user.findUnique({ where: { id: id } });
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+    res.json({ name: user.name, year: user.year, email: user.email });
 });
 
 app.post('/api/users', async (req, res) => {
@@ -79,7 +86,7 @@ app.post('/api/users', async (req, res) => {
 
     await prisma.board.createMany({ data: initialBoards });
 
-    res.json(user);
+    res.json({ id: user.id, name: user.name, year: user.year, email: user.email });
 });
 
 app.patch('/api/users/:id', authenticateToken, async (req, res) => {
@@ -96,7 +103,7 @@ app.patch('/api/users/:id', authenticateToken, async (req, res) => {
         where: { id: id },
         data: updatedData,
     });
-    res.json(user);
+    res.json({ id: user.id, name: user.name, year: user.year, email: user.email });
 });
 
 app.delete('/api/users/:id', async (req, res) => {
