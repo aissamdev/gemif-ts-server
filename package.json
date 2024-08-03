@@ -1,9 +1,9 @@
 {
   "name": "gemif-ts-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "vercel-build": "prisma generate && tsc && prisma db push"
   },
   "keywords": [],
   "author": "",
