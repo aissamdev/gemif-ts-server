@@ -1,0 +1,37 @@
+datasource db {
+    provider = "postgresql"
+    url = env("POSTGRES_PRISMA_URL")
+    directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id        String      @id @default(cuid())
+    name      String
+    email     String   @unique
+    year      String
+    password  String
+    boards    Board[]
+}
+
+model Board {
+    id      String    @id @default(cuid())
+    name    String
+    userId  String
+    user    User   @relation(fields: [userId], references: [id])
+    cards   Card[]
+}
+
+model Card {
+    id      String    @id @default(cuid())
+    name    String
+    description String
+    tags Json
+    date String
+    time String
+    boardId String
+    board   Board?  @relation(fields: [boardId], references: [id])
+}
