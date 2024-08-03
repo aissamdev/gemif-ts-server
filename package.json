@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "vercel-build": "prisma generate && tsc && prisma db push"
+    "vercel-build": "prisma generate && prisma db push && tsc"
   },
   "keywords": [],
   "author": "",
