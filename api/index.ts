@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 const app = express();
 
 app.use(json());
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'abc123';
